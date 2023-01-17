@@ -1,26 +1,20 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<script setup>
+import { ref } from 'vue'
+import SearchForm from '@/components/SearchForm.vue'
+import Result from '@/components/Result.vue'
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+const query = ref('powfu')
+const trackList = ref(null)
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+const searchTrack = async () => {
+  const res = await fetch('https://api.deezer.com/search?q='+query.value)
+    .then(r => r.json())
+  trackList.value = res["data"]
 }
+
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<template>
+  <SearchForm v-model="query" @search="searchTrack" />
+  <Result :trackList="trackList" />
+</template>
